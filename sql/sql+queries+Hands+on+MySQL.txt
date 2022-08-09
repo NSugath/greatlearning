@@ -1,0 +1,99 @@
+-- --------------------------------------------------------
+# Datasets Used: cricket_1.csv, cricket_2.csv
+-- cricket_1 is the table for cricket test match 1.
+-- cricket_2 is the table for cricket test match 2.
+-- --------------------------------------------------------
+
+# Q1. Find all the players who were present in the test match 1 as well as in the test match 2.
+SELECT * FROM cricket_1
+UNION
+SELECT * FROM cricket_2;
+ 
+# Q2. Write a MySQl query to find the players from the test match 1 having popularity higher than the average popularity.
+select player_name , Popularity from cricket_1 WHERE Popularity > (SELECT AVG(Popularity) FROM cricket_1);
+
+# Q3. Find player_id and player name that are common in the test match 1 and test match 2.
+SELECT player_id , player_name FROM cricket_1
+WHERE cricket_1.player_id IN (SELECT player_id FROM cricket_2);
+
+# Q4. Retrieve player_id, runs, and player_name from cricket_1 and cricket_2 table and display the player_id of the players where the runs are more than the average runs.
+SELECT player_id , runs , player_name FROM cricket_1 WHERE  cricket_1.RUNS > (SELECT AVG(RUNS) FROM cricket_2);
+
+# Q5. Write a query to extract the player_id, runs and player_name from the table “cricket_1” where the runs are greater than 50.
+SELECT player_id , runs , player_name FROM cricket_1 
+WHERE cricket_1.Runs > 50 ;
+
+# Q6. Write a query to extract all the columns from cricket_1 where player_name starts with ‘y’ and ends with ‘v’.
+SELECT * FROM cricket_1 WHERE player_name LIKE 'y%v';
+
+# Q7. Write a query to extract all the columns from cricket_1 where player_name does not end with ‘t’.
+SELECT * FROM cricket_1 WHERE player_name NOT LIKE '%t';
+ 
+-- --------------------------------------------------------
+# Dataset Used: cric_combined.csv 
+-- --------------------------------------------------------
+
+# Q8. Write a MySQL query to create a new column PC_Ratio that contains the popularity to charisma ratio.
+ALTER TABLE cric_combined
+ADD COLUMN PC_Ratio float4;
+
+UPDATE cric_combined SET PC_Ratio =  (Popularity / Charisma);
+ 
+# Q9. Write a MySQL query to find the top 5 players having the highest popularity to charisma ratio.
+SELECT Player_Name , PC_Ratio  FROM cric_combined ORDER BY  PC_Ratio DESC LIMIT 5;
+ 
+# Q10. Write a MySQL query to find the player_ID and the name of the player that contains the character “D” in it.
+SELECT Player_Id ,  Player_Name FROM cric_combined WHERE Player_Name LIKE '%d%'; 
+
+# Q11. Extract Player_Id  and pc_ratio where the pc_ratio is between 0.12 and 0.25.
+SELECT Player_Id , pc_ratio FROM cric_combined WHERE pc_ratio BETWEEN 0.12 AND 0.25;
+
+-- --------------------------------------------------------
+# Dataset Used: new_cricket.csv
+-- --------------------------------------------------------
+
+# Q12. Extract the Player_Id and Player_name of the players where the charisma value is null.
+SELECT Player_Id , Player_Name FROM new_cricket WHERE Charisma  IS NULL;
+ 
+# Q13. Write a MySQL query to impute all the NULL values with 0.
+SELECT IFNULL(Charisma, 0) FROM new_cricket;
+ 
+# Q14. Separate all Player_Id into single numeric ids (example PL1 =  1).
+SELECT Player_Id, SUBSTR(Player_Id,3)
+FROM  new_cricket;
+ 
+# Q15. Write a MySQL query to extract Player_Id , Player_Name and charisma where the charisma is greater than 25.
+SELECT Player_Id , Player_Name , charisma FROM new_cricket WHERE charisma > 25;
+ 
+
+-- --------------------------------------------------------
+# Dataset Used: churn1.csv 
+-- --------------------------------------------------------
+
+# Q16. Write a query to  count all the duplicate values from the column “Agreement” from the table churn1.
+SELECT Agreement, COUNT(Agreement) FROM churn1 GROUP BY Agreement HAVING COUNT(Agreement) > 1;
+
+# Q17. Rename the table churn1 to “Churn_Details”.
+RENAME TABLE churn1 TO Churn_Details;
+
+# Q18. Write a query to create a new column new_Amount that contains the sum of TotalAmount and MonthlyServiceCharges.
+ALTER TABLE Churn_Details
+ADD COLUMN new_Amount FLOAT;
+
+UPDATE Churn_Details SET new_Amount = (TotalAmount + MonthlyServiceCharges);
+
+SELECT new_Amount FROM CHURN_DETAILS;
+
+# Q19. Rename column new_Amount to Amount.
+ALTER TABLE Churn_Details CHANGE new_Amount Amount FLOAT;
+
+SELECT AMOUNT FROM CHURN_DETAILS;
+
+# Q20. Drop the column “Amount” from the table “Churn_Details”.
+ALTER TABLE Churn_Details DROP COLUMN Amount ;
+
+# Q21. Write a query to extract the customerID, InternetConnection and gender from the table “Churn_Details ” where the value of the column “InternetConnection” has ‘i’ at the second position.
+SELECT customerID, InternetConnection,  gender FROM Churn_Details WHERE InternetConnection LIKE '_i%';
+
+# Q22. Find the records where the tenure is 6x, where x is any number.
+SELECT * FROM Churn_Details WHERE tenure LIKE '6_';
